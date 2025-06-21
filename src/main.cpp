@@ -1,5 +1,6 @@
 #include "InterfaceModule.h"
 #include "Utils.h"
+#include "MapModule.h"
 #include "GameContext.h"
 #include "GameState.h"
 #include "input.h"
@@ -64,9 +65,9 @@ int main(int argc, char* argv[]) {
                 break;
             // Add other cases like Map, Puzzle, etc., here as per your game design
             // e.g.
-            // case GameState::MAP:
-            //     state = MapModule::run(ctx);
-            //     break;
+             case GameState::MAP:
+                state = MapModule::run(ctx);
+             break;
             // case GameState::PUZZLE:
             //     state = PuzzleGame::run(ctx);
             //     break;
