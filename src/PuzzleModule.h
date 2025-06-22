@@ -2,6 +2,6 @@
 #include "GameContext.h"
 #include "GameState.h"
 
-namespace MapModule {
+namespace PuzzleModule {
     GameState run(GameContext& ctx);
 }

@@ -1,6 +1,7 @@
 #include "InterfaceModule.h"
 #include "Utils.h"
 #include "MapModule.h"
+#include "PuzzleModule.h"
 #include "GameContext.h"
 #include "GameState.h"
 #include "input.h"
@@ -68,9 +69,9 @@ int main(int argc, char* argv[]) {
              case GameState::MAP:
                 state = MapModule::run(ctx);
              break;
-            // case GameState::PUZZLE:
-            //     state = PuzzleGame::run(ctx);
-            //     break;
+             case GameState::PUZZLE:
+            state = PuzzleModule::run(ctx);
+                break;
             // etc.
             default:
                 state = GameState::EXIT;

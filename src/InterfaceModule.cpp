@@ -1,18 +1,20 @@
+// src/InterfaceModule.cpp
 #include "InterfaceModule.h"
-#include "GameState.h"       // Include this for GameState
-#include "GameContext.h"     // Include this for GameContext
+#include "GameState.h"
+#include "GameContext.h"
 #include "Utils.h"
 #include "input.h"
 #include "button.h"
 #include "Leaderboard.h"
+#include "PuzzleModule.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <vector>
 
 namespace {
-    SDL_Texture* bgTex = nullptr;
-    TTF_Font* font = nullptr;
+    SDL_Texture*       bgTex   = nullptr;
+    TTF_Font*          font    = nullptr;
     std::vector<Button> buttons;
 
     void initUI(SDL_Renderer* ren) {
@@ -24,16 +26,16 @@ namespace {
             TTF_SetFontStyle(font, TTF_STYLE_BOLD);
         }
         if (buttons.empty()) {
-            buttons.emplace_back(100, 200, 300, 60, "New Game", SDL_Color{255, 255, 255, 200});
-            buttons.emplace_back(100, 280, 300, 60, "Map", SDL_Color{255, 255, 255, 200});
-            buttons.emplace_back(100, 360, 300, 60, "Leaderboard", SDL_Color{255, 255, 255, 200});
-            buttons.emplace_back(100, 440, 300, 60, "Exit", SDL_Color{255, 255, 255, 200});
+            buttons.emplace_back(100, 200, 300, 60, "New Game",    SDL_Color{255,255,255,200});
+            buttons.emplace_back(100, 280, 300, 60, "Map",         SDL_Color{255,255,255,200});
+            buttons.emplace_back(100, 360, 300, 60, "Leaderboard", SDL_Color{255,255,255,200});
+            buttons.emplace_back(100, 440, 300, 60, "Exit",        SDL_Color{255,255,255,200});
         }
     }
 }
 
 GameState InterfaceModule::run(GameContext& ctx) {
-    auto ren = ctx.renderer;
+    SDL_Renderer* ren = ctx.renderer;
     initUI(ren);
 
     bool loop = true;
@@ -43,9 +45,10 @@ GameState InterfaceModule::run(GameContext& ctx) {
     while (loop) {
         int mx, my;
         SDL_GetMouseState(&mx, &my);
-        for (auto& b : buttons)
+        for (auto& b : buttons) {
             b.isHovered = (mx >= b.rect.x && mx <= b.rect.x + b.rect.w
-                           && my >= b.rect.y && my <= b.rect.y + b.rect.h);
+                         && my >= b.rect.y && my <= b.rect.y + b.rect.h);
+        }
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -57,8 +60,9 @@ GameState InterfaceModule::run(GameContext& ctx) {
                     if (!b.isHovered) continue;
                     if (b.label == "New Game") {
                         std::string name;
-                        if (getPlayerName(ren,name))  // Corrected call
+                        if (getPlayerName(ren, name)) {
                             next = GameState::MAP;
+                        }
                     }
                     else if (b.label == "Map") {
                         next = GameState::MAP;
@@ -78,15 +82,17 @@ GameState InterfaceModule::run(GameContext& ctx) {
 
         SDL_RenderClear(ren);
         if (bgTex) SDL_RenderCopy(ren, bgTex, nullptr, nullptr);
+
         for (auto& b : buttons) {
-            auto c = b.isHovered ? SDL_Color{0, 200, 255, 255} : b.color;
+            SDL_Color c = b.isHovered ? SDL_Color{0,200,255,255} : b.color;
             SDL_SetRenderDrawColor(ren, c.r, c.g, c.b, c.a);
             SDL_RenderFillRect(ren, &b.rect);
-            SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(ren, 255,255,255,255);
             SDL_RenderDrawRect(ren, &b.rect);
-            renderText(ren, font, b.label, {255, 255, 255, 255},
+            renderText(ren, font, b.label, {255,255,255,255},
                        b.rect.x + 20, b.rect.y + 15);
         }
+
         SDL_RenderPresent(ren);
         SDL_Delay(16);
     }
