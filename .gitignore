@@ -1,0 +1,11 @@
+MegaGame
+*.o
+*.exe
+
+# ignore SDL_ttf font caches, etc.
+*.ttf
+*.wav
+*.mp3
+
+# macOS
+.DS_Store
